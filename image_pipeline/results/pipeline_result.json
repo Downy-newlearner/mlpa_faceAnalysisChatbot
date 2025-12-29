@@ -1,0 +1,13 @@
+{
+  "total_faces": 28,
+  "gender": {
+    "male": 23,
+    "female": 5
+  },
+  "age_group": {
+    "10s": 6,
+    "20s": 22,
+    "30s": 0,
+    "40_plus": 0
+  }
+}
