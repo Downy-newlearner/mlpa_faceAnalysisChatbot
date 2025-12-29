@@ -1,0 +1,35 @@
+# Docker specific ignores
+.git
+.gitignore
+*.md
+!README.md
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv
+.venv
+*.egg-info
+
+# Node
+node_modules
+.npm
+
+# Test & Data
+model_test
+data
+
+# Environment
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db

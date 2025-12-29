@@ -102,57 +102,68 @@
 
 ## 📦 설치 방법
 
-### 1. 저장소 클론
+### 🐳 Docker로 실행 (권장)
+
+가장 간단한 방법입니다. Docker만 설치되어 있으면 됩니다.
+
 ```bash
-git clone <repository-url>
-cd MLPA_face_detection_chatbot
+# 1. 저장소 클론
+git clone https://github.com/Downy-newlearner/mlpa_faceAnalysisChatbot.git
+cd mlpa_faceAnalysisChatbot
+
+# 2. 환경변수 설정
+cp .env.example .env
+# .env 파일에서 OPENAI_API_KEY 수정
+
+# 3. Docker Compose로 실행
+docker-compose up --build
+
+# 4. 접속
+# 프론트엔드: http://localhost:5173
+# 백엔드 API: http://localhost:8000/docs
 ```
 
-### 2. Python 의존성 설치
-```bash
-# Conda 환경 활성화 (권장)
-conda activate faceChat_hdd
+### 💻 수동 설치
 
-# 패키지 설치
+Docker 없이 직접 설치하려면:
+
+#### 1. 저장소 클론
+```bash
+git clone https://github.com/Downy-newlearner/mlpa_faceAnalysisChatbot.git
+cd mlpa_faceAnalysisChatbot
+```
+
+#### 2. Python 의존성 설치
+```bash
+# Python 3.11+ 필요
 pip install -r requirements.txt
 ```
 
-### 3. 환경변수 설정
+#### 3. 환경변수 설정
 ```bash
 cp .env.example .env
-
-# .env 파일 수정
-nano .env
+nano .env  # OPENAI_API_KEY 수정
 ```
 
-**필수 설정:**
-```
-OPENAI_API_KEY=your-openai-api-key-here
-```
-
-### 4. 프론트엔드 설치
+#### 4. 프론트엔드 설치
 ```bash
 cd frontend
 npm install
+cd ..
+```
+
+#### 5. 서버 실행
+```bash
+# 터미널 1: 백엔드
+uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+
+# 터미널 2: 프론트엔드
+cd frontend && npm run dev
 ```
 
 ---
 
 ## 🚀 사용법
-
-### 서버 실행
-
-**터미널 1: 백엔드 서버**
-```bash
-cd MLPA_face_detection_chatbot
-uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-**터미널 2: 프론트엔드 개발 서버**
-```bash
-cd frontend
-npm run dev
-```
 
 ### 접속
 - **프론트엔드**: http://localhost:5173
@@ -255,10 +266,12 @@ Content-Type: application/json
 ## 📁 프로젝트 구조
 
 ```
-MLPA_face_detection_chatbot/
+mlpa_faceAnalysisChatbot/
 ├── README.md                 # 프로젝트 문서
 ├── requirements.txt          # Python 의존성
-├── .env                      # 환경변수 (gitignore)
+├── docker-compose.yml        # Docker Compose 설정
+├── Dockerfile.backend        # 백엔드 Docker 이미지
+├── Dockerfile.frontend       # 프론트엔드 Docker 이미지
 ├── .env.example              # 환경변수 샘플
 │
 ├── backend/                  # FastAPI 백엔드
@@ -271,7 +284,7 @@ MLPA_face_detection_chatbot/
 │   │   └── chat.py           # 챗봇 API
 │   ├── services/
 │   │   ├── llm_service.py    # OpenAI GPT-4o-mini
-│   │   └── pipeline_service.py # 이미지 파이프라인 래퍼
+│   │   └── pipeline_service.py
 │   └── schemas/
 │       └── models.py         # Pydantic 스키마
 │
@@ -279,34 +292,31 @@ MLPA_face_detection_chatbot/
 │   ├── package.json
 │   ├── vite.config.js
 │   └── src/
-│       ├── App.jsx           # 메인 앱
-│       ├── api/
-│       │   └── client.js     # API 클라이언트
+│       ├── App.jsx
+│       ├── api/client.js
 │       └── components/
 │           ├── ImageUploader.jsx
 │           ├── AnalysisResult.jsx
-│           └── ChatInterface.jsx
+│           ├── ChatInterface.jsx
+│           └── HistorySidebar.jsx
 │
 ├── image_pipeline/           # 컴퓨터 비전 파이프라인
-│   ├── image_pipeline.py     # 메인 파이프라인
-│   └── results/              # 분석 결과 저장
+│   └── image_pipeline.py
 │
-├── storage/                  # 데이터 저장소
-│   ├── database.db           # SQLite DB
-│   └── uploads/              # 업로드된 이미지
-│
-└── data/                     # 테스트 데이터
-    └── classroom/            # 샘플 이미지
+└── storage/                  # 데이터 저장소 (자동 생성)
+    ├── database.db
+    └── uploads/
 ```
 
 ---
 
 ## 📝 라이선스
 
-MLPA 프로젝트 © 2024
+MLPA 프로젝트 © 2025
 
 ---
 
 ## 👤 개발자
 
-MLPA Face Detection Chatbot Team
+**Dahun Chung**  
+📧 jdh251425142514@gmail.com
