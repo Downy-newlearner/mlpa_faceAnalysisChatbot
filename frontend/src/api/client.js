@@ -6,6 +6,25 @@
 const API_BASE_URL = '/api';
 
 /**
+ * Helper to safely parse JSON from a fetch response.
+ * Provides better error messages if the response is not valid JSON.
+ */
+async function getJsonOrText(response) {
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    try {
+      return await response.json();
+    } catch (e) {
+      const text = await response.text();
+      throw new Error(`JSON parse error: ${e.message}. Body: ${text.substring(0, 100)}`);
+    }
+  } else {
+    const text = await response.text();
+    throw new Error(`Server returned non-JSON response (${response.status}): ${text.substring(0, 100)}`);
+  }
+}
+
+/**
  * Upload images for analysis.
  * @param {File[]} files - Array of image files to upload
  * @returns {Promise<{analysis_id: string, image_count: number, message: string}>}
@@ -22,11 +41,11 @@ export async function uploadImages(files) {
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Upload failed');
+    const error = await getJsonOrText(response);
+    throw new Error(error.detail || `Upload failed (${response.status})`);
   }
 
-  return response.json();
+  return getJsonOrText(response);
 }
 
 /**
@@ -40,11 +59,11 @@ export async function startAnalysis(analysisId) {
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Analysis failed to start');
+    const error = await getJsonOrText(response);
+    throw new Error(error.detail || `Analysis failed to start (${response.status})`);
   }
 
-  return response.json();
+  return getJsonOrText(response);
 }
 
 /**
@@ -56,11 +75,11 @@ export async function getResult(analysisId) {
   const response = await fetch(`${API_BASE_URL}/result/${analysisId}`);
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Failed to get result');
+    const error = await getJsonOrText(response);
+    throw new Error(error.detail || `Failed to get result (${response.status})`);
   }
 
-  return response.json();
+  return getJsonOrText(response);
 }
 
 /**
@@ -72,11 +91,11 @@ export async function listAnalyses(limit = 20) {
   const response = await fetch(`${API_BASE_URL}/analyses?limit=${limit}`);
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Failed to get analyses');
+    const error = await getJsonOrText(response);
+    throw new Error(error.detail || `Failed to get analyses (${response.status})`);
   }
 
-  return response.json();
+  return getJsonOrText(response);
 }
 
 /**
@@ -98,11 +117,11 @@ export async function sendChat(analysisId, question) {
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Chat failed');
+    const error = await getJsonOrText(response);
+    throw new Error(error.detail || `Chat failed (${response.status})`);
   }
 
-  return response.json();
+  return getJsonOrText(response);
 }
 
 /**
@@ -114,11 +133,11 @@ export async function getChatHistory(analysisId) {
   const response = await fetch(`${API_BASE_URL}/history/${analysisId}`);
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Failed to get history');
+    const error = await getJsonOrText(response);
+    throw new Error(error.detail || `Failed to get history (${response.status})`);
   }
 
-  return response.json();
+  return getJsonOrText(response);
 }
 
 /**
@@ -130,9 +149,9 @@ export async function getSummary(analysisId) {
   const response = await fetch(`${API_BASE_URL}/summary/${analysisId}`);
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Failed to get summary');
+    const error = await getJsonOrText(response);
+    throw new Error(error.detail || `Failed to get summary (${response.status})`);
   }
 
-  return response.json();
+  return getJsonOrText(response);
 }
